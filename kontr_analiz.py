@@ -13,8 +13,6 @@ from sklearn.linear_model import LinearRegression           #Gerekli kütüphane
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import seaborn as sns
-import warnings
-warnings.filterwarnings("ignore")
 from sklearn.preprocessing import StandardScaler
 from sklearn.ensemble import RandomForestRegressor
 import time
@@ -26,6 +24,9 @@ from sklearn.linear_model import Lasso
 from sklearn.linear_model import Ridge
 from sklearn.linear_model import ElasticNet
 from sklearn.neighbors import KNeighborsRegressor
+from sklearn.model_selection import GridSearchCV
+import warnings
+warnings.filterwarnings("ignore")
 
 df = pd.read_excel("KONTR.xlsx")        #Çalışma sayfası dahil edilir
 
@@ -131,36 +132,48 @@ print(f"Test_MAE:{test_mae}")
 print(f"Test_R2: {test_kare}")
 print(f"Test_Time:{total_time2}")
 
+xgb_params = {
+    'n_estimators': [100, 200, 300],                        #XGB REGRESSOR KULLANILDI
+    'learning_rate': [0.01, 0.1, 0.2],
+    'max_depth': [3, 5, 7]
+}
+
+xgb = XGBRegressor()
+grid_search = GridSearchCV(estimator=xgb, param_grid=xgb_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+
+
 start_train_time = time.time()
-gb = XGBRegressor()                                           #XGBREGRESSOR KULLANIMI
-model3 = gb.fit(x_train_scaled, y_train)
-end_train_time =time.time()
-total_time1 = end_train_time - start_test_time
+grid_search.fit(x_train_scaled, y_train)
+best_model = grid_search.best_estimator_
+end_train_time = time.time()
+total_train_time = end_train_time - start_train_time
+
+print("En İyi Parametreler: ", grid_search.best_params_)
+print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
 
 
-y_train_pred = gb.predict(x_train_scaled)
+y_train_pred = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred)
 train_mae = mean_absolute_error(y_train, y_train_pred)
-train_kare = r2_score(y_train, y_train_pred)
+train_r2 = r2_score(y_train, y_train_pred)
 
 start_test_time = time.time()
-y_test_pred = gb.predict(x_test_scaled)
+y_test_pred = best_model.predict(x_test_scaled)
 end_test_time = time.time()
-total_time2 = end_test_time - start_test_time
+total_test_time = end_test_time - start_test_time
 
-test_mse =mean_squared_error(y_test, y_test_pred)
+test_mse = mean_squared_error(y_test, y_test_pred)
 test_mae = mean_absolute_error(y_test, y_test_pred)
-test_kare = r2_score(y_test, y_test_pred)
+test_r2 = r2_score(y_test, y_test_pred)
 
-
-print(f"Train Time: {total_time1}")
+print(f"Train Time: {total_train_time}")
 print(f"Train MSE: {train_mse}")
 print(f"Train MAE: {train_mae}")
-print(f"Train R2: {train_kare}")
-print(f"Test Time: {total_time2}")
+print(f"Train R2: {train_r2}")
+print(f"Test Time: {total_test_time}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
-print(f"Test R2: {test_kare}")
+print(f"Test R2: {test_r2}")
 
 start_train_time = time.time()
 dc = DecisionTreeRegressor()                            #DECISION TREE REGRESSOR KULLANIMI
@@ -192,22 +205,33 @@ print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
 print(f"Test R2:{test_kare}")
 
-start_train_time = time.time()                              #SVR KULLANIMI
+svr_params = {                              #SVR KULLANIMI
+    'C': [0.1, 1, 10],
+    'epsilon': [0.01, 0.1, 0.2],
+    'kernel': ['linear', 'rbf']
+}
+
 svr = SVR()
-model5 = svr.fit(x_train_scaled, y_train)
+grid_search = GridSearchCV(estimator=svr, param_grid=svr_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+
+start_train_time = time.time()
+model5 = grid_search.fit(x_train_scaled, y_train)
+best_model = grid_search.best_estimator_
 end_train_time = time.time()
 total_time1 = end_train_time - start_train_time
 
-y_train_pred = svr.predict(x_train_scaled)
+print("En İyi Parametreler: ", grid_search.best_params_)
+print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
+
+y_train_pred = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred)
 train_mae = mean_absolute_error(y_train, y_train_pred)
 train_kare = r2_score(y_train, y_train_pred)
 
 start_test_time = time.time()
-y_test_pred = svr.predict(x_test_scaled)
+y_test_pred = best_model.predict(x_test_scaled)
 end_test_time = time.time()
 total_time2 = end_test_time - start_test_time
-
 
 test_mse = mean_squared_error(y_test, y_test_pred)
 test_mae = mean_absolute_error(y_test, y_test_pred)
@@ -221,7 +245,7 @@ print(f"Train R2: {train_kare}")
 print(f"Test Time: {total_time2}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
-print(f"Test R2:{test_kare}")
+print(f"Test R2: {test_kare}")
 
 start_train_time = time.time()                          #LASSO KULLANIMI
 ls = Lasso(alpha=0.1)
