@@ -364,3 +364,19 @@ print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
 print(f"Test R2: {test_kare}")
 
+models = ['Linear Regression', 'Random Forest Regression', 'XGB REGRESSOR', 'DECISION TREE REGRESSOR', 'SVR', 'LASSO', 'RIDGE', 'ELASTICNET', 'K NEIGHBORS REGRESSOR']
+r2_skor = [0.9994, 0.9998, 0.9999, 1.0, 0.9992, 0.9990, 0.9991, 0.9762, 0.9982]
+
+plt.figure(figsize=(16, 6))
+sns.barplot(x=models, y=r2_skor, palette="magma")
+plt.title('Model R² Scores Comparison', fontsize=16)
+plt.xlabel('Models', fontsize=14)
+plt.ylabel('R² Score', fontsize=14)
+plt.ylim(0.95, 1.02)  # Daha yakın bir aralık, farkları daha belirgin hale getirir
+plt.xticks(rotation=45, ha='right', fontsize=12)
+
+for index, value in enumerate(r2_skor):
+    plt.text(index, value + 0.002, f'{value:.4f}', ha='center', fontsize=12)
+
+plt.show()
+
