@@ -125,6 +125,30 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
+# Eğitim ve test hatalarını hesaplayın
+train_errors = y_train - y_train_pred
+test_errors = y_test - y_test_pred
+
+# Grafik oluşturma
+plt.figure(figsize=(16, 6))
+
+# Eğitim hataları histogramı
+plt.subplot(1, 2, 1)
+sns.histplot(train_errors.values, kde=True, color='blue', bins=30)
+plt.title('Linear Regression Eğitim Hata Dağılımı')
+plt.xlabel('Hata')
+plt.ylabel('Frekans')
+
+# Test hataları histogramı
+plt.subplot(1, 2, 2)
+sns.histplot(test_errors.values, kde=True, color='blue', bins=30)
+plt.title('Linear Regression Test Hata Dağılımı')
+plt.xlabel('Hata')
+plt.ylabel('Frekans')
+
+plt.tight_layout()
+plt.show()
+
 start_train_time = time.time()                              #RANDOM FOREST REGRESSOR KULLANIMI
 rf = RandomForestRegressor()
 model2 = rf.fit(x_train_scaled, y_train)
@@ -420,7 +444,7 @@ total_time1 = end_train_time - start_train_time
 y_train_pred7 = ridge.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred7)
 train_mae = mean_absolute_error(y_train, y_train_pred7)
-train_mape = mean_absolute_percentage_error(y_test, y_test_pred7)
+train_mape = mean_absolute_percentage_error(y_train, y_train_pred7)
 train_kare = r2_score(y_train, y_train_pred7)
 
 start_test_time = time.time()
