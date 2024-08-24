@@ -78,6 +78,7 @@ total_time1 = end_train_time - start_train_time
 y_train_pred = lm.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred)
 train_mae = mean_absolute_error(y_train, y_train_pred)
+train_mape = mean_absolute_percentage_error(y_train, y_train_pred)
 train_kare = r2_score(y_train, y_train_pred)
 
 
@@ -89,18 +90,20 @@ total_time2 = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred)
 test_mae = mean_absolute_error(y_test, y_test_pred)
+test_mape = mean_absolute_percentage_error(y_test, y_test_pred)
 test_kare = r2_score(y_test, y_test_pred)
 
 
-
+print(f"Train_Time: {total_time1}")
 print(f"Train_MSE: {train_mse}")
 print(f"Train_MAE: {train_mae}")
+print(f"Train_MAPE:{train_mape}")
 print(f"Train_R2: {train_kare}")
-print(f"Train_Time: {total_time1}")
+print(f"Test_Time:{total_time2}")
 print(f"Test_MSE: {test_mse}")
 print(f"Test_MAE: {test_mae}")
+print(f"Test_MAPE:{test_mape}")
 print(f"Test_R2:{test_kare}")
-print(f"Test_Time:{total_time2}")
 
 plt.figure(figsize=(14, 6))
 plt.subplot(1, 2, 1)
@@ -131,6 +134,7 @@ total_time1 = end_train_time - start_train_time
 y_train_pred2 = rf.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred2)
 train_mae = mean_absolute_error(y_train, y_train_pred2)
+train_mape = mean_absolute_percentage_error(y_train,y_train_pred2)
 train_kare = r2_score(y_train,y_train_pred2)
 
 
@@ -141,18 +145,20 @@ total_time2 = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred2)
 test_mae = mean_absolute_error(y_test, y_test_pred2)
+test_mape= mean_absolute_percentage_error(y_test, y_test_pred2)
 test_kare = r2_score(y_test, y_test_pred2)
 
 
-
+print(f"Train_Time: {total_time1}")
 print(f"Train_MSE: {train_mse}")
 print(f"Train_MAE: {train_mae}")
+print(f"Train_MAPE: {train_mape}")
 print(f"Train_R2:{train_kare}")
-print(f"Train_Time: {total_time1}")
+print(f"Test_Time:{total_time2}")
 print(f"Test_MSE: {test_mse}")
 print(f"Test_MAE:{test_mae}")
+print(f"Test_MAPE: {test_mape}")
 print(f"Test_R2: {test_kare}")
-print(f"Test_Time:{total_time2}")
 
 plt.figure(figsize=(14,6))
 plt.subplot(1,2,1)
@@ -195,6 +201,7 @@ print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
 y_train_pred3 = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred3)
 train_mae = mean_absolute_error(y_train, y_train_pred3)
+train_mape = mean_absolute_percentage_error(y_train, y_train_pred3)
 train_r2 = r2_score(y_train, y_train_pred3)
 
 start_test_time = time.time()
@@ -204,15 +211,18 @@ total_test_time = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred3)
 test_mae = mean_absolute_error(y_test, y_test_pred3)
+test_mape = mean_absolute_percentage_error(y_test, y_test_pred3)
 test_r2 = r2_score(y_test, y_test_pred3)
 
 print(f"Train Time: {total_train_time}")
 print(f"Train MSE: {train_mse}")
 print(f"Train MAE: {train_mae}")
+print(f"Train MAPE: {train_mape}")
 print(f"Train R2: {train_r2}")
 print(f"Test Time: {total_test_time}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
+print(f"Test MAPE: {test_mape}")
 print(f"Test R2: {test_r2}")
 
 plt.figure(figsize=(14,6))
@@ -242,6 +252,7 @@ total_time1 = time.time()
 y_train_pred4 = dc.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred4)
 train_mae = mean_absolute_error(y_train, y_train_pred4)
+train_mape = mean_absolute_percentage_error(y_train, y_train_pred4)
 train_kare = r2_score(y_train, y_train_pred4)
 
 start_test_time = time.time()
@@ -251,16 +262,19 @@ total_time2 = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred4)
 test_mae = mean_absolute_error(y_test, y_test_pred4)
+test_mape = mean_absolute_percentage_error(y_test, y_test_pred4)
 test_kare = r2_score(y_test, y_test_pred4)
 
 
 print(f"Train Time: {total_time1}")
 print(f"Train MSE: {train_mse}")
 print(f"Train MAE: {train_mae}")
+print(f"Train MAPE: {train_mape}")
 print(f"Train R2: {train_kare}")
 print(f"Test Time: {total_time2}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
+print(f"Test MAPE: {test_mape}")
 print(f"Test R2:{test_kare}")
 
 plt.figure(figsize=(14,6))
@@ -302,6 +316,7 @@ print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
 y_train_pred5 = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred5)
 train_mae = mean_absolute_error(y_train, y_train_pred5)
+train_mape = mean_absolute_percentage_error(y_train, y_train_pred5)
 train_kare = r2_score(y_train, y_train_pred5)
 
 start_test_time = time.time()
@@ -311,16 +326,19 @@ total_time2 = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred5)
 test_mae = mean_absolute_error(y_test, y_test_pred5)
+test_mape = mean_absolute_percentage_error(y_test, y_test_pred5)
 test_kare = r2_score(y_test, y_test_pred5)
 
 
 print(f"Train Time: {total_time1}")
 print(f"Train MSE: {train_mse}")
 print(f"Train MAE: {train_mae}")
+print(f"Train MAPE: {train_mape}")
 print(f"Train R2: {train_kare}")
 print(f"Test Time: {total_time2}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
+print(f"Test MAPE: {test_mape}")
 print(f"Test R2: {test_kare}")
 
 plt.figure(figsize=(14,6))
@@ -350,6 +368,7 @@ total_time1 = end_train_time - start_train_time
 y_train_pred6 = ls.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred6)
 train_mae = mean_absolute_error(y_train, y_train_pred6)
+train_mape = mean_absolute_percentage_error(y_train, y_train_pred6)
 train_kare = r2_score(y_train, y_train_pred6)
 
 
@@ -360,15 +379,18 @@ total_time2 = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred6)
 test_mae = mean_absolute_error(y_test, y_test_pred6)
+test_mape = mean_absolute_percentage_error(y_test, y_test_pred6)
 test_kare = r2_score(y_test, y_test_pred6)
 
 print(f"Train Time: {total_time1}")
 print(f"Train MSE:{train_mse}")
 print(f"Train MAE: {train_mae}")
+print(f"Train MAPE: {train_mape}")
 print(f"Train R2: {train_kare}")
 print(f"Test Time:{total_time2}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
+print(f"Test MAPE:{test_mape}")
 print(f"Test R2: {test_kare}")
 
 plt.figure(figsize=(14,6))
@@ -398,6 +420,7 @@ total_time1 = end_train_time - start_train_time
 y_train_pred7 = ridge.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred7)
 train_mae = mean_absolute_error(y_train, y_train_pred7)
+train_mape = mean_absolute_percentage_error(y_test, y_test_pred7)
 train_kare = r2_score(y_train, y_train_pred7)
 
 start_test_time = time.time()
@@ -407,15 +430,18 @@ total_time2 = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred7)
 test_mae = mean_absolute_error(y_test, y_test_pred7)
+test_mape = mean_absolute_percentage_error(y_test, y_test_pred7)
 test_kare = r2_score(y_test, y_test_pred7)
 
 print(f"Train Time: {total_time1}")
 print(f"Train MSE: {train_mse}")
 print(f"Train MAE: {train_mae}")
+print(f"Train MAPE: {train_mape}")
 print(f"Train R2: {train_kare}")
 print(f"Test Time: {total_time2}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
+print(f"Test MAPE: {test_mape}")
 print(f"Test R2: {test_kare}")
 
 plt.figure(figsize=(14,6))
@@ -445,6 +471,7 @@ total_time1 = end_train_time - start_train_time
 y_train_pred8 = elastic_net.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred8)
 train_mae = mean_absolute_error(y_train, y_train_pred8)
+train_mape = mean_absolute_percentage_error(y_train, y_train_pred8)
 train_kare = r2_score(y_train, y_train_pred8)
 
 start_test_time = time.time()
@@ -454,15 +481,18 @@ total_time2 = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred8)
 test_mae = mean_absolute_error(y_test, y_test_pred8)
+test_mape = mean_absolute_percentage_error(y_test, y_test_pred8)
 test_kare = r2_score(y_test, y_test_pred8)
 
 print(f"Train Time: {total_time1}")
 print(f"Train MSE: {train_mse}")
 print(f"Train MAE: {train_mae}")
+print(f"Train MAPE: {train_mape}")
 print(f"Train R2: {train_kare}")
 print(f"Test Time: {total_time2}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
+print(f"Test MAPE: {test_mape}")
 print(f"Test R2: {test_kare}")
 
 plt.figure(figsize=(14,6))
@@ -492,6 +522,7 @@ total_time1 = end_train_time - start_train_time
 y_train_pred9 = knn.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred9)
 train_mae = mean_absolute_error(y_train, y_train_pred9)
+train_mape = mean_absolute_percentage_error(y_train, y_train_pred9)
 train_kare = r2_score(y_train, y_train_pred9)
 
 start_test_time = time.time()
@@ -501,15 +532,18 @@ total_time2 = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred9)
 test_mae = mean_absolute_error(y_test, y_test_pred9)
+test_mape = mean_absolute_percentage_error(y_test, y_test_pred9)
 test_kare = r2_score(y_test, y_test_pred9)
 
 print(f"Train Time: {total_time1}")
 print(f"Train MSE: {train_mse}")
 print(f"Train MAE: {train_mae}")
+print(f"Train MAPE: {train_mape}")
 print(f"Train R2: {train_kare}")
 print(f"Test Time: {total_time2}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
+print(f"Test MAPE: {test_mape}")
 print(f"Test R2: {test_kare}")
 
 plt.figure(figsize=(14,6))
@@ -528,21 +562,5 @@ plt.ylabel("Tahmini Test Değerleri")
 plt.title("Test Verileri İçin K NEIGHBORS Doğrusu")
 
 plt.tight_layout()
-plt.show()
-
-models = ['Linear Regression', 'Random Forest Regression', 'XGB REGRESSOR', 'DECISION TREE REGRESSOR', 'SVR', 'LASSO', 'RIDGE', 'ELASTICNET', 'K NEIGHBORS REGRESSOR']
-r2_skor = [0.9994, 0.9998, 0.9999, 1.0, 0.9992, 0.9990, 0.9991, 0.9762, 0.9982]
-
-plt.figure(figsize=(16, 6))
-sns.barplot(x=models, y=r2_skor, palette="magma")
-plt.title('Model R² Scores Comparison', fontsize=16)
-plt.xlabel('Models', fontsize=14)
-plt.ylabel('R² Score', fontsize=14)
-plt.ylim(0.95, 1.02)
-plt.xticks(rotation=45, ha='right', fontsize=12)
-
-for index, value in enumerate(r2_skor):
-    plt.text(index, value + 0.002, f'{value:.4f}', ha='center', fontsize=12)
-
 plt.show()
 
