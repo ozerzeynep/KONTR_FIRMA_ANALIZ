@@ -25,6 +25,7 @@ from sklearn.linear_model import Ridge
 from sklearn.linear_model import ElasticNet
 from sklearn.neighbors import KNeighborsRegressor
 from sklearn.model_selection import GridSearchCV
+from statsmodels.tsa.arima.model import ARIMA
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -149,38 +150,49 @@ plt.ylabel('Frekans')
 plt.tight_layout()
 plt.show()
 
-start_train_time = time.time()                              #RANDOM FOREST REGRESSOR KULLANIMI
-rf = RandomForestRegressor()
-model2 = rf.fit(x_train_scaled, y_train)
+randomForest_params = {                            #RANDOM FOREST REGRESSOR KULLANIMI
+    'n_estimators': [100, 150, 200],
+    'max_depth': [10, 20, 30],
+    'min_samples_split': [2, 4, 6],
+    'min_samples_leaf': [1, 2, 4]
+}
+
+rf = RandomForestRegressor(random_state=21)
+grid_search = GridSearchCV(estimator=rf, param_grid=randomForest_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+
+start_train_time = time.time()
+grid_search.fit(x_train_scaled, y_train)
+best_model = grid_search.best_estimator_
 end_train_time = time.time()
 total_time1 = end_train_time - start_train_time
 
-y_train_pred2 = rf.predict(x_train_scaled)
+print("En İyi Parametreler: ", grid_search.best_params_)
+print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
+
+y_train_pred2 = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred2)
 train_mae = mean_absolute_error(y_train, y_train_pred2)
-train_mape = mean_absolute_percentage_error(y_train,y_train_pred2)
-train_kare = r2_score(y_train,y_train_pred2)
-
+train_mape = mean_absolute_percentage_error(y_train, y_train_pred2)
+train_kare = r2_score(y_train, y_train_pred2)
 
 start_test_time = time.time()
-y_test_pred2 = rf.predict(x_test_scaled)
+y_test_pred2 = best_model.predict(x_test_scaled)
 end_test_time = time.time()
 total_time2 = end_test_time - start_test_time
 
 test_mse = mean_squared_error(y_test, y_test_pred2)
 test_mae = mean_absolute_error(y_test, y_test_pred2)
-test_mape= mean_absolute_percentage_error(y_test, y_test_pred2)
+test_mape = mean_absolute_percentage_error(y_test, y_test_pred2)
 test_kare = r2_score(y_test, y_test_pred2)
-
 
 print(f"Train_Time: {total_time1}")
 print(f"Train_MSE: {train_mse}")
 print(f"Train_MAE: {train_mae}")
 print(f"Train_MAPE: {train_mape}")
-print(f"Train_R2:{train_kare}")
-print(f"Test_Time:{total_time2}")
+print(f"Train_R2: {train_kare}")
+print(f"Test_Time: {total_time2}")
 print(f"Test_MSE: {test_mse}")
-print(f"Test_MAE:{test_mae}")
+print(f"Test_MAE: {test_mae}")
 print(f"Test_MAPE: {test_mape}")
 print(f"Test_R2: {test_kare}")
 
@@ -209,17 +221,17 @@ xgb_params = {
 }
 
 xgb = XGBRegressor()
-grid_search = GridSearchCV(estimator=xgb, param_grid=xgb_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+grid_search2 = GridSearchCV(estimator=xgb, param_grid=xgb_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
 
 
 start_train_time = time.time()
-grid_search.fit(x_train_scaled, y_train)
-best_model = grid_search.best_estimator_
+grid_search2.fit(x_train_scaled, y_train)
+best_model = grid_search2.best_estimator_
 end_train_time = time.time()
 total_train_time = end_train_time - start_train_time
 
-print("En İyi Parametreler: ", grid_search.best_params_)
-print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
+print("En İyi Parametreler: ", grid_search2.best_params_)
+print("En İyi CV Skoru (Negatif MSE): ", -grid_search2.best_score_)
 
 
 y_train_pred3 = best_model.predict(x_train_scaled)
@@ -267,20 +279,31 @@ plt.title("Test Verileri İçin XGB Regression Doğrusu")
 plt.tight_layout()
 plt.show()
 
-start_train_time = time.time()
-dc = DecisionTreeRegressor()                            #DECISION TREE REGRESSOR KULLANIMI
-model4 = dc.fit(x_train_scaled, y_train)
-end_train_time = time.time()
-total_time1 = time.time()
+decisionTree_params = {                         # DECISION TREE REGRESSOR KULLANIMI
+    'max_depth': [None, 5, 8, 10],
+    'min_samples_split': [2, 4, 6]
+}
 
-y_train_pred4 = dc.predict(x_train_scaled)
+dc = DecisionTreeRegressor(random_state=42)
+grid_search3 = GridSearchCV(estimator= dc, param_grid= decisionTree_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+
+start_train_time = time.time()
+grid_search3.fit(x_train_scaled, y_train)
+best_model = grid_search3.best_estimator_
+end_train_time = time.time()
+train_time = end_train_time - start_train_time
+
+print("En İyi Parametreler: ", grid_search3.best_params_)
+print("En İyi CV Skoru (Negatif MSE): ", -grid_search3.best_score_)
+
+y_train_pred4 = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred4)
 train_mae = mean_absolute_error(y_train, y_train_pred4)
 train_mape = mean_absolute_percentage_error(y_train, y_train_pred4)
 train_kare = r2_score(y_train, y_train_pred4)
 
 start_test_time = time.time()
-y_test_pred4 = dc.predict(x_test_scaled)
+y_test_pred4 = best_model.predict(x_test_scaled)
 end_test_time = time.time()
 total_time2 = end_test_time - start_test_time
 
@@ -289,8 +312,7 @@ test_mae = mean_absolute_error(y_test, y_test_pred4)
 test_mape = mean_absolute_percentage_error(y_test, y_test_pred4)
 test_kare = r2_score(y_test, y_test_pred4)
 
-
-print(f"Train Time: {total_time1}")
+print(f"Train Time: {train_time}")
 print(f"Train MSE: {train_mse}")
 print(f"Train MAE: {train_mae}")
 print(f"Train MAPE: {train_mape}")
@@ -299,7 +321,7 @@ print(f"Test Time: {total_time2}")
 print(f"Test MSE: {test_mse}")
 print(f"Test MAE: {test_mae}")
 print(f"Test MAPE: {test_mape}")
-print(f"Test R2:{test_kare}")
+print(f"Test R2: {test_kare}")
 
 plt.figure(figsize=(14,6))
 plt.subplot(1,2,1)
@@ -322,7 +344,7 @@ plt.show()
 svr_params = {                              #SVR KULLANIMI
     'C': [0.1, 1, 10],
     'epsilon': [0.01, 0.1, 0.2],
-    'kernel': ['linear', 'rbf']
+    'kernel': ['linear']
 }
 
 svr = SVR()
@@ -383,13 +405,23 @@ plt.title("Test Verileri İçin SVR Doğrusu")
 plt.tight_layout()
 plt.show()
 
-start_train_time = time.time()                          #LASSO KULLANIMI
-ls = Lasso(alpha=0.1)
-model6 = ls.fit(x_train_scaled, y_train)
+lasso_params = {                              #LASSO KULLANIMI
+    'alpha': [0.001, 0.01, 0.1, 1, 10]
+}
+
+ls = Lasso()
+grid_search = GridSearchCV(estimator=ls, param_grid=lasso_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+
+start_train_time = time.time()
+grid_search.fit(x_train_scaled, y_train)
+best_model = grid_search.best_estimator_
 end_train_time = time.time()
 total_time1 = end_train_time - start_train_time
 
-y_train_pred6 = ls.predict(x_train_scaled)
+print("En İyi Parametreler: ", grid_search.best_params_)
+print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
+
+y_train_pred6 = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred6)
 train_mae = mean_absolute_error(y_train, y_train_pred6)
 train_mape = mean_absolute_percentage_error(y_train, y_train_pred6)
@@ -397,7 +429,7 @@ train_kare = r2_score(y_train, y_train_pred6)
 
 
 start_test_time = time.time()
-y_test_pred6 = ls.predict(x_test_scaled)
+y_test_pred6 = best_model.predict(x_test_scaled)
 end_test_time = time.time()
 total_time2 = end_test_time - start_test_time
 
@@ -435,20 +467,30 @@ plt.title("Test Verileri İçin Lasso Doğrusu")
 plt.tight_layout()
 plt.show()
 
+ridge_params={                                #RIDGE KULLANIMI
+    'alpha': [0.001, 0.01, 0.1, 1, 10]
+}
+
+ridge = Ridge()
+grid_search = GridSearchCV(estimator=ridge, param_grid=ridge_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+
 start_train_time = time.time()
-ridge = Ridge(alpha=1.0)                                #RIDGE KULLANIMI
-model7 = ridge.fit(x_train_scaled, y_train)
+grid_search.fit(x_train_scaled, y_train)
+best_model = grid_search.best_estimator_
 end_train_time = time.time()
 total_time1 = end_train_time - start_train_time
 
-y_train_pred7 = ridge.predict(x_train_scaled)
+print("En İyi Parametreler: ", grid_search.best_params_)
+print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
+
+y_train_pred7 = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred7)
 train_mae = mean_absolute_error(y_train, y_train_pred7)
 train_mape = mean_absolute_percentage_error(y_train, y_train_pred7)
 train_kare = r2_score(y_train, y_train_pred7)
 
 start_test_time = time.time()
-y_test_pred7 = ridge.predict(x_test_scaled)
+y_test_pred7 = best_model.predict(x_test_scaled)
 end_test_time = time.time()
 total_time2 = end_test_time - start_test_time
 
@@ -486,20 +528,31 @@ plt.title("Test Verileri İçin Rıdge Regression Doğrusu")
 plt.tight_layout()
 plt.show()
 
+elasticNet_params={                               #ELASTICNET KULLANIMI
+    'alpha': [0.001, 0.01, 0.1, 1, 10],
+    'l1_ratio': [0.1, 0.5, 0.9]
+}
+
+elastic_net = ElasticNet()
+grid_search = GridSearchCV(estimator=elastic_net, param_grid=elasticNet_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1 )
+
 start_train_time = time.time()
-elastic_net = ElasticNet(alpha=1.0, l1_ratio=0.5)               #ELASTICNET KULLANIMI
-model8 = elastic_net.fit(x_train_scaled, y_train)
+grid_search.fit(x_train_scaled, y_train)
+best_model = grid_search.best_estimator_
 end_train_time = time.time()
 total_time1 = end_train_time - start_train_time
 
-y_train_pred8 = elastic_net.predict(x_train_scaled)
+print("En İyi Parametreler: ", grid_search.best_params_)
+print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
+
+y_train_pred8 = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred8)
 train_mae = mean_absolute_error(y_train, y_train_pred8)
 train_mape = mean_absolute_percentage_error(y_train, y_train_pred8)
 train_kare = r2_score(y_train, y_train_pred8)
 
 start_test_time = time.time()
-y_test_pred8 = elastic_net.predict(x_test_scaled)
+y_test_pred8 = best_model.predict(x_test_scaled)
 end_test_time = time.time()
 total_time2 = end_test_time - start_test_time
 
@@ -537,20 +590,31 @@ plt.title("Test Verileri İçin ELASTICNET Doğrusu")
 plt.tight_layout()
 plt.show()
 
+neighbour_params= {                                   #K NEIGHBORS REGRESSOR KULLANIMI
+    'n_neighbors': [3, 5, 7, 9]
+}
+
+knn = KNeighborsRegressor()
+grid_search = GridSearchCV(estimator=knn, param_grid=neighbour_params, cv=5, scoring='neg_mean_squared_error', n_jobs=-1, verbose=1)
+
 start_train_time = time.time()
-knn = KNeighborsRegressor(n_neighbors=5)                  #K NEIGHBORS REGRESSOR KULLANIMI
-model9 = knn.fit(x_train_scaled, y_train)
+grid_search.fit(x_train_scaled, y_train)
+best_model = grid_search.best_estimator_
 end_train_time = time.time()
 total_time1 = end_train_time - start_train_time
 
-y_train_pred9 = knn.predict(x_train_scaled)
+print("En İyi Parametreler: ", grid_search.best_params_)
+print("En İyi CV Skoru (Negatif MSE): ", -grid_search.best_score_)
+
+
+y_train_pred9 = best_model.predict(x_train_scaled)
 train_mse = mean_squared_error(y_train, y_train_pred9)
 train_mae = mean_absolute_error(y_train, y_train_pred9)
 train_mape = mean_absolute_percentage_error(y_train, y_train_pred9)
 train_kare = r2_score(y_train, y_train_pred9)
 
 start_test_time = time.time()
-y_test_pred9 = knn.predict(x_test_scaled)
+y_test_pred9 = best_model.predict(x_test_scaled)
 end_test_time = time.time()
 total_time2 = end_test_time - start_test_time
 
@@ -587,4 +651,6 @@ plt.title("Test Verileri İçin K NEIGHBORS Doğrusu")
 
 plt.tight_layout()
 plt.show()
+
+
 
