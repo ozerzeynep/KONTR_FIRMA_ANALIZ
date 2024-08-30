@@ -59,6 +59,21 @@ plt.xticks(rotation =50)
 plt.ylabel("Fiyat", fontsize =13)
 plt.show()
 
+plt.figure(figsize=(14,5))
+plt.subplot(1,2,1)
+sns.kdeplot(df.Açılış, shade = True, color ='red')
+
+plt.subplot(1,2,2)
+sns.kdeplot(df.Düşük, shade=True, color= 'green')
+
+plt.show()
+
+corrDeger = df.select_dtypes(include=[float, int])
+
+corr = corrDeger.corr()
+
+print(corr)
+
 y= df[["Şimdi"]]
 x= df.drop(["Şimdi", "Tarih","Hac."], axis=1)
 
